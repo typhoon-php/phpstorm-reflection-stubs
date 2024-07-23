@@ -32,16 +32,23 @@ enum CleanUp implements ConstantHook, FunctionHook, ClassHook
             $data = $data->without(Data::UnresolvedInterfaces);
         }
 
-        return $this->cleanUp($data)
-            ->with(Data::Constants, array_map($this->cleanUp(...), $data[Data::Constants]))
-            ->with(Data::Properties, array_map($this->cleanUp(...), $data[Data::Properties]))
-            ->with(Data::Methods, array_map($this->cleanUp(...), $data[Data::Methods]));
+        // todo issue
+        if ($id instanceof NamedClassId && $id->name === \Throwable::class) {
+            $methods = $data[Data::Methods];
+            unset($methods['__toString']);
+            $data = $data->with(Data::Methods, $methods);
+        }
+
+        return self::cleanUp($data)
+            ->with(Data::Constants, array_map(self::cleanUp(...), $data[Data::Constants]))
+            ->with(Data::Properties, array_map(self::cleanUp(...), $data[Data::Properties]))
+            ->with(Data::Methods, array_map(self::cleanUp(...), $data[Data::Methods]));
     }
 
-    private function cleanUp(TypedMap $data): TypedMap
+    private static function cleanUp(TypedMap $data): TypedMap
     {
         return $data
-            ->without(Data::Location, Data::PhpDoc)
+            ->with(Data::Parameters, array_map(self::cleanUp(...), $data[Data::Parameters]))
             ->with(Data::Attributes, array_values(array_filter(
                 $data[Data::Attributes],
                 static fn(TypedMap $attribute): bool => !str_starts_with($attribute[Data::AttributeClassName], self::ATTRIBUTE_PREFIX),
