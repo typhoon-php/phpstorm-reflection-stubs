@@ -32,7 +32,7 @@ final class PhpStormStubsLocator implements ConstantLocator, NamedFunctionLocato
 
     private static function changeDetector(): ChangeDetector
     {
-        return self::$changeDetector ??= ComposerPackageChangeDetector::fromNameEnsureInstalled(self::PACKAGE);
+        return self::$changeDetector ??= ComposerPackageChangeDetector::fromName(self::PACKAGE);
     }
 
     public function locate(ConstantId|NamedFunctionId|NamedClassId $id): ?Resource
