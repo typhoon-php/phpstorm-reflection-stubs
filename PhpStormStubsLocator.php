@@ -12,7 +12,9 @@ use Typhoon\DeclarationId\NamedClassId;
 use Typhoon\DeclarationId\NamedFunctionId;
 use Typhoon\PhpStormReflectionStubs\Internal\ApplyLanguageLevelTypeAwareAttribute;
 use Typhoon\PhpStormReflectionStubs\Internal\ApplyTentativeTypeAttribute;
-use Typhoon\PhpStormReflectionStubs\Internal\CleanUp;
+use Typhoon\PhpStormReflectionStubs\Internal\RemovePhpStormMetaAttributes;
+use Typhoon\PhpStormReflectionStubs\Internal\RemoveThrowableToString;
+use Typhoon\PhpStormReflectionStubs\Internal\RemoveTraversableExtendsIterable;
 use Typhoon\Reflection\Exception\FileIsNotReadable;
 use Typhoon\Reflection\Internal\Data;
 use Typhoon\Reflection\Locator\ConstantLocator;
@@ -61,9 +63,11 @@ final class PhpStormStubsLocator implements ConstantLocator, NamedFunctionLocato
                 ->with(Data::InternallyDefined, true)
                 ->with(Data::ChangeDetector, self::changeDetector()),
             hooks: [
+                RemoveThrowableToString::Instance,
+                RemoveTraversableExtendsIterable::Instance,
                 ApplyLanguageLevelTypeAwareAttribute::Instance,
                 ApplyTentativeTypeAttribute::Instance,
-                CleanUp::Instance,
+                RemovePhpStormMetaAttributes::Instance,
             ],
         );
     }

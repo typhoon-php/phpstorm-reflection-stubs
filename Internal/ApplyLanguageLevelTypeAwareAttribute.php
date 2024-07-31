@@ -8,9 +8,9 @@ use Typhoon\DeclarationId\AnonymousClassId;
 use Typhoon\DeclarationId\AnonymousFunctionId;
 use Typhoon\DeclarationId\NamedClassId;
 use Typhoon\DeclarationId\NamedFunctionId;
-use Typhoon\Reflection\Internal\ClassHook;
 use Typhoon\Reflection\Internal\Data;
-use Typhoon\Reflection\Internal\FunctionHook;
+use Typhoon\Reflection\Internal\Hook\ClassHook;
+use Typhoon\Reflection\Internal\Hook\FunctionHook;
 use Typhoon\Reflection\TyphoonReflector;
 use Typhoon\Type\Type;
 use Typhoon\Type\types;
@@ -25,18 +25,27 @@ enum ApplyLanguageLevelTypeAwareAttribute implements FunctionHook, ClassHook
     case Instance;
     private const ATTRIBUTE = 'JetBrains\PhpStorm\Internal\LanguageLevelTypeAware';
 
-    public function process(NamedFunctionId|AnonymousFunctionId|NamedClassId|AnonymousClassId $id, TypedMap $data, TyphoonReflector $reflector): TypedMap
+    public function priority(): int
+    {
+        return 950;
+    }
+
+    public function processFunction(NamedFunctionId|AnonymousFunctionId $id, TypedMap $data, TyphoonReflector $reflector): TypedMap
+    {
+        return self::processFunctionLike($data);
+    }
+
+    public function processClass(NamedClassId|AnonymousClassId $id, TypedMap $data, TyphoonReflector $reflector): TypedMap
     {
         return $data
-            ->with(Data::Parameters, array_map(self::apply(...), $data[Data::Parameters]))
             ->with(Data::Constants, array_map(self::apply(...), $data[Data::Constants]))
             ->with(Data::Properties, array_map(self::apply(...), $data[Data::Properties]))
-            ->with(Data::Methods, array_map(
-                static fn(TypedMap $method): TypedMap => self::apply(
-                    $method->with(Data::Parameters, array_map(self::apply(...), $method[Data::Parameters])),
-                ),
-                $data[Data::Methods],
-            ));
+            ->with(Data::Methods, array_map(self::processFunctionLike(...), $data[Data::Methods]));
+    }
+
+    private static function processFunctionLike(TypedMap $data): TypedMap
+    {
+        return self::apply($data)->with(Data::Parameters, array_map(self::apply(...), $data[Data::Parameters]));
     }
 
     private static function apply(TypedMap $data): TypedMap
