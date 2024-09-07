@@ -1,6 +1,6 @@
 {
     "name": "typhoon/phpstorm-reflection-stubs",
-    "description": "Typhoon PhpStorm Reflection Stubs",
+    "description": "PhpStorm Reflection Stubs integration for Typhoon Reflection",
     "license": "MIT",
     "type": "library",
     "authors": [
@@ -23,9 +23,51 @@
         "typhoon/type": "^0.4",
         "typhoon/typed-map": "^0.4"
     },
+    "require-dev": {
+        "bamarni/composer-bin-plugin": "^1.8.2",
+        "ergebnis/composer-normalize": "^2.43.0",
+        "friendsofphp/php-cs-fixer": "^3.64.0",
+        "phpyh/coding-standard": "^2.6.2"
+    },
     "autoload": {
         "psr-4": {
-            "Typhoon\\PhpStormReflectionStubs\\": ""
+            "Typhoon\\PhpStormReflectionStubs\\": "src/"
         }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Typhoon\\PhpStormReflectionStubs\\": "tests/"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "bamarni/composer-bin-plugin": true,
+            "ergebnis/composer-normalize": true,
+            "infection/extension-installer": true
+        },
+        "platform": {
+            "php": "8.1"
+        },
+        "sort-packages": true
+    },
+    "extra": {
+        "bamarni-bin": {
+            "bin-links": false,
+            "forward-command": true,
+            "target-directory": "tools"
+        }
+    },
+    "scripts": {
+        "bump-dev": [
+            "@composer bump --dev-only",
+            "@composer bin all bump --dev-only"
+        ],
+        "check-require": "tools/composer-require-checker/vendor/bin/composer-require-checker",
+        "check-unused": "tools/composer-unused/vendor/bin/composer-unused",
+        "fixcs": "php-cs-fixer fix --diff",
+        "infection": "infection --show-mutations",
+        "pre-command-run": "mkdir -p var",
+        "psalm": "tools/psalm/vendor/bin/psalm --show-info --no-diff --no-cache",
+        "test": "phpunit"
     }
 }

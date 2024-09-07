@@ -1,6 +1,12 @@
 # Typhoon PhpStorm Reflection Stubs
 
-This repository is a readonly Typhoon monorepo subsplit.
-Please, open pull requests and issues in the [main repository](https://github.com/typhoon-php/typhoon).
+[![PHP Version Requirement](https://img.shields.io/packagist/dependency-v/typhoon/phpstorm-reflection-stubs/php)](https://packagist.org/packages/typhoon/phpstorm-reflection-stubs)
+[![GitHub Release](https://img.shields.io/github/v/release/typhoon-php/phpstorm-reflection-stubs)](https://github.com/typhoon-php/phpstorm-reflection-stubs/releases)
+[![Psalm Level](https://shepherd.dev/github/typhoon-php/phpstorm-reflection-stubs/level.svg)](https://shepherd.dev/github/typhoon-php/phpstorm-reflection-stubs)
+[![Psalm Type Coverage](https://shepherd.dev/github/typhoon-php/phpstorm-reflection-stubs/coverage.svg)](https://shepherd.dev/github/typhoon-php/phpstorm-reflection-stubs)
 
-Read [documentation](https://github.com/typhoon-php/typhoon/tree/0.4.x).
+## Installation
+
+```shell
+composer require typhoon/phpstorm-reflection-stubs
+```
